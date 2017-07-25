@@ -1,0 +1,307 @@
+{
+    "appid"       : "f3373a58-733d-4bd7-89ac-d6ce76019eae",
+    "name"      : "Python Utilities ",
+    "description" : "Implements basic python functions for UI access",
+    "publisher": "Robert Martin",
+    "package_name": "PythonUtilities",
+    "type": "generic",
+    "license": "GNU GPLv3",
+    "main_module" : "python_utilities_connector.pyc",
+    "app_version": "1.0.0",
+    "utctime_updated": "2017-07-05T18:07:00.000000Z",
+    "product_vendor": "Generic",
+    "product_name": "Python Utilities",
+    "product_version_regex": ".*",
+    "min_phantom_version": "1.0.0",
+    "logo": "pythonutilities.png",
+    "configuration": {},
+    "actions": [
+      {
+        "action": "regex function",
+        "description": "Perform various regular expression functions on a string.",
+        "type": "generic",
+        "identifier": "regex_function",
+        "read_only": true,
+        "parameters": {
+          "start": {
+            "description": "Starting position of the search. Defaults to 0",
+            "data_type": "numeric",
+            "required": false
+          },
+          "end": {
+            "description": "Ending position of the search. Defaults to end of string.",
+            "data_type": "numeric",
+            "required": false
+          },
+          "pattern": {
+            "description": "Regex pattern",
+            "data_type": "string",
+            "required": true
+          },
+          "source_string": {
+            "description": "Source string.",
+            "data_type": "string",
+            "required": true
+          },
+          "replace": {
+            "description": "The replacement value is only required for sub and subn actions. For a single space, use ' '. For deletion, use ''",
+            "data_type": "string",
+            "required": false,
+            "default": " "
+          },
+          "action": {
+            "description": "Action to take on string",
+            "data_type": "string",
+            "required": true,
+            "default": "search",
+            "value_list": ["search", "match", "split", "findall", "finditer", "sub", "subn"]
+          }
+        },
+        "render": {
+          "type": "table",
+          "width": 7,
+          "height": 2,
+          "title": "Search Details"
+        },
+        "output": [
+          {
+            "data_path": "action_result.data",
+            "data_type": "string"
+          },
+          {
+            "data_path": "action_result.message",
+            "data_type": "string"
+          },
+          {
+            "data_path": "action_result.parameter.source_string",
+            "data_type": "string"
+          },
+          {
+            "data_path": "action_result.parameter.pattern",
+            "data_type": "string"
+          },
+          {
+            "data_path": "action_result.status",
+            "data_type": "string"
+          },
+          {
+            "data_path": "action_result.summary",
+            "data_type": "string"
+          }
+        ],
+        "versions":"EQ(*)"
+      },
+      {
+        "action": "find string",
+        "description": "Find a substring in a string.",
+        "type": "generic",
+        "identifier": "find_string",
+        "read_only": true,
+        "parameters": {
+          "search_string": {
+            "description": "Substring to find in a string.",
+            "data_type": "string",
+            "contains": [],
+            "primary": true,
+            "required": true
+          },
+          "source_string": {
+            "description": "String to search with substring.",
+            "data_type": "string",
+            "contains": [],
+            "primary": true,
+            "required": true
+          },
+          "source_string_start": {
+            "description": "Starting index for search. Default is zero.",
+            "data_type": "numeric",
+            "contains": [],
+            "primary": false,
+            "requred": false
+          },
+          "source_string_end": {
+            "description": "Ending index for search. Default is string length.",
+            "data_type": "numeric",
+            "contains": [],
+            "primary": false,
+            "requred": false
+          }
+        },
+        "render": {
+          "type": "table",
+          "width": 7,
+          "height": 2,
+          "title": "Search Details"
+        },
+        "output": [
+          {
+            "data_path": "action_result.data",
+            "data_type": "string"
+          },
+          {
+            "data_path": "action_result.message",
+            "data_type": "string"
+          },
+          {
+            "data_path": "action_result.parameter.search_string",
+            "data_type": "string"
+          },
+          {
+            "data_path": "action_result.parameter.source_string",
+            "data_type": "string"
+          },
+          {
+            "data_path": "action_result.parameter.source_string_start",
+            "data_type": "string"
+          },
+          {
+            "data_path": "action_result.parameter.source_string_end",
+            "data_type": "string"
+          },
+          {
+            "data_path": "action_result.status",
+            "data_type": "string"
+          },
+          {
+            "data_path": "action_result.summary",
+            "data_type": "string"
+          },
+          {
+            "data_path": "action_result.data.*.search_string_index",
+            "data_type": "string"
+          }
+        ],
+        "versions":"EQ(*)"
+      },
+      {
+        "action": "split string",
+        "description": "Use regex to split a string into a list. The separator must be a valid regex. You may also use any single separator.",
+        "type": "generic",
+        "identifier": "split_string",
+        "read_only": true,
+        "parameters": {
+          "separators": {
+            "description": "Separators to split string.",
+            "data_type": "string",
+            "contains": [],
+            "primary": true,
+            "required": true
+          },
+          "source_string": {
+            "description": "String to split.",
+            "data_type": "string",
+            "contains": [],
+            "primary": true,
+            "required": true
+          }
+        },
+        "render": {
+          "type": "table",
+          "width": 7,
+          "height": 2,
+          "title": "Search Details"
+        },
+        "output": [
+          {
+            "data_path": "action_result.data",
+            "data_type": "string"
+          },
+          {
+            "data_path": "action_result.message",
+            "data_type": "string"
+          },
+          {
+            "data_path": "action_result.parameter.separators",
+            "data_type": "string"
+          },
+          {
+            "data_path": "action_result.parameter.source_string",
+            "data_type": "string"
+          },
+          {
+            "data_path": "action_result.status",
+            "data_type": "string"
+          },
+          {
+            "data_path": "action_result.summary",
+            "data_type": "string"
+          },
+          {
+            "data_path": "action_result.data.*.split_list",
+            "data_type": "string"
+          }
+        ],
+        "versions":"EQ(*)"
+      },
+      {
+        "action": "get substring",
+        "description": "Returns the substring based on the start, end, step indexes.",
+        "type": "generic",
+        "identifier": "get_substring",
+        "read_only": true,
+        "parameters": {
+          "start": {
+            "description": "Starting position of the string.",
+            "data_type": "string",
+            "contains": [],
+            "primary": true,
+            "required": false
+          },
+          "end": {
+            "description": "Ending position of the string.",
+            "data_type": "string",
+            "contains": [],
+            "primary": true,
+            "required": false
+          },
+          "step": {
+            "description": "Step",
+            "data_type": "string",
+            "contains": [],
+            "primary": true,
+            "required": false
+          },
+          "source_string": {
+            "description": "Source string.",
+            "data_type": "string",
+            "contains": [],
+            "primary": true,
+            "required": true
+          }
+        },
+        "render": {
+          "type": "table",
+          "width": 7,
+          "height": 2,
+          "title": "Search Details"
+        },
+        "output": [
+          {
+            "data_path": "action_result.data",
+            "data_type": "string"
+          },
+          {
+            "data_path": "action_result.message",
+            "data_type": "string"
+          },
+          {
+            "data_path": "action_result.parameter.source_string",
+            "data_type": "string"
+          },
+          {
+            "data_path": "action_result.status",
+            "data_type": "string"
+          },
+          {
+            "data_path": "action_result.summary",
+            "data_type": "string"
+          },
+          {
+            "data_path": "action_result.data.*.substring",
+            "data_type": "string"
+          }
+        ],
+        "versions":"EQ(*)"
+      }
+    ]
+}

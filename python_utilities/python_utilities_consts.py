@@ -1,0 +1,12 @@
+# --
+# File: python_utilities_consts.py
+#
+# --
+
+PYTHONUTILITIES_SEARCH_STRING = 'search_string'
+PYTHONUTILITIES_SOURCE_STRING = 'source_string'
+PYTHONUTILITIES_SOURCE_STRING_START = 'source_string_start'
+PYTHONUTILITIES_SOURCE_STRING_END = 'source_string_end'
+PYTHONUTILITIES_REGEX_ACTION = 'action'
+PYTHONUTILITIES_REGEX_PATTERN = 'pattern'
+PYTHONUTILITIES_REGEX_REPLACE = 'replace'
