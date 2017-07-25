@@ -1,0 +1,178 @@
+{
+    "appid"       : "0fb33cc2-5cad-4bcf-8094-4e0faccd19fb",
+    "name"      : "Beautiful Soup Utilities",
+    "description" : "Implements basic BeautifulSoup functions for UI access",
+    "publisher": "Robert Martin",
+    "package_name": "BeautifulSoupUtilities",
+    "type": "generic",
+    "license": "GNU GPLv3",
+    "main_module" : "bs4_connector.pyc",
+    "app_version": "1.0",
+    "utctime_updated": "2017-06-17T07:09:42.000000Z",
+    "product_vendor": "Generic",
+    "product_name": "Beautiful Soup Utilities",
+    "product_version_regex": ".*",
+    "min_phantom_version": "1.0.0",
+    "logo": "bs4.png",
+    "configuration": {},
+    "actions": [
+      {
+        "action": "find strings",
+        "description": "Finds the strings in html data.",
+        "type": "generic",
+        "identifier": "find_strings",
+        "read_only": true,
+        "parameters": {
+          "search_string": {
+            "description": "String to search for",
+            "data_type": "string",
+            "contains": [],
+            "primary": true,
+            "required": true
+          },
+          "source_string": {
+            "description": "HTML source to search for string in",
+            "data_type": "string",
+            "contains": [],
+            "primary": true,
+            "required": true
+          }
+        },
+        "render": {
+          "type": "table",
+          "width": 7,
+          "height": 2,
+          "title": "Search Details"
+        },
+        "output": [
+          {
+            "data_path": "action_result.data",
+            "data_type": "string"
+          },
+          {
+            "data_path": "action_result.message",
+            "data_type": "string"
+          },
+          {
+            "data_path": "action_result.parameter.search_string",
+            "data_type": "string"
+          },
+          {
+            "data_path": "action_result.parameter.source_string",
+            "data_type": "string"
+          },
+          {
+            "data_path": "action_result.status",
+            "data_type": "string"
+          },
+          {
+            "data_path": "action_result.summary",
+            "data_type": "string"
+          },
+          {
+            "data_path": "action_result.data.*.strings",
+            "data_type": "string"
+          }
+        ],
+        "versions":"EQ(*)"
+      },
+      {
+        "action": "get urls",
+        "description": "Finds URLs in given HTML code",
+        "type": "generic",
+        "identifier": "get_html_urls",
+        "read_only": true,
+        "parameters": {
+          "source_string": {
+            "description": "HTML source string.",
+            "data_type": "string",
+            "contains": [],
+            "primary": true,
+            "required": true
+          }
+        },
+        "render": {
+          "type": "table",
+          "width": 6,
+          "height": 2,
+          "title": "Search Details"
+        },
+        "output": [
+          {
+            "data_path": "action_result.data",
+            "data_type": "string"
+          },
+          {
+            "data_path": "action_result.message",
+            "data_type": "string"
+          },
+          {
+            "data_path": "action_result.parameter.source_string",
+            "data_type": "string"
+          },
+          {
+            "data_path": "action_result.status",
+            "data_type": "string"
+          },
+          {
+            "data_path": "action_result.summary",
+            "data_type": "string"
+          },
+          {
+            "data_path": "action_result.data.*.urls",
+            "data_type": "string"
+          }
+        ],
+        "versions":"EQ(*)"
+      },
+      {
+        "action": "get text",
+        "description": "Returns the text from an HTML string source.",
+        "type": "generic",
+        "identifier": "get_html_text",
+        "read_only": true,
+        "parameters": {
+          "source_string": {
+            "description": "Source string.",
+            "data_type": "string",
+            "contains": [],
+            "primary": true,
+            "required": true
+          }
+        },
+        "render": {
+          "type": "table",
+          "width": 6,
+          "height": 2,
+          "title": "Search Details"
+        },
+        "output": [
+          {
+            "data_path": "action_result.data",
+            "data_type": "string"
+          },
+          {
+            "data_path": "action_result.message",
+            "data_type": "string"
+          },
+          {
+            "data_path": "action_result.parameter.source_string",
+            "data_type": "string"
+          },
+          {
+            "data_path": "action_result.status",
+            "data_type": "string"
+          },
+          {
+            "data_path": "action_result.summary",
+            "data_type": "string"
+          },
+          {
+            "data_path": "action_result.data.*.plain_text",
+            "data_type": "string"
+          }
+        ],
+        "versions":"EQ(*)"
+      }
+    ]
+}
