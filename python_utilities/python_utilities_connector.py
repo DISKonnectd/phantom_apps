@@ -14,11 +14,11 @@ from phantom.action_result import ActionResult
 
 # Imports local to this App
 from python_utilities_consts import *
-
 import simplejson as json
-import datetime
+from datetime import datetime
 import re
-import pprint
+# import pprint
+import inspect
 
 
 def _json_fallback(obj):
@@ -36,15 +36,70 @@ class PhantomUtilitiesConnector(BaseConnector):
         # Call the BaseConnectors init first
         super(PhantomUtilitiesConnector, self).__init__()
 
-    def _find_string(self, param):
-        self.debug_print('_find_string() called.')
+    # returns the python type of user provide item
+    def _item_type(self, param):
+        self.debug_print('{}'.format(inspect.stack()[0][3]))
         # Add an action result to the App Run
         action_result = ActionResult(dict(param))
         self.add_action_result(action_result)
 
         try:
-            searchString = param['search_string']
-            sourceString = param['source_string']
+            user_item = param[PYTHONUTILITIES_ITEM]
+            result = type(user_item)
+            action_result.add_data({'type': result})
+            action_result.set_status(phantom.APP_SUCCESS)
+        except Exception as e:
+            action_result.set_status(phantom.APP_ERROR, '', e)
+            return action_result.get_status()
+
+        return action_result.get_status()
+
+    # returns a list from a dictionary through items() function
+    def _dictionary_to_list(self, param):
+        self.debug_print('{}'.format(inspect.stack()[0][3]))
+        # Add an action result to the App Run
+        action_result = ActionResult(dict(param))
+        self.add_action_result(action_result)
+
+        try:
+            dictionary = param[PYTHONUTILITIES_ITEM]
+            result = dictionary.items()
+            action_result.add_data({'result': result})
+            action_result.set_status(phantom.APP_SUCCESS)
+        except Exception as e:
+            action_result.set_status(phantom.APP_ERROR, '', e)
+            return action_result.get_status()
+
+        return action_result.get_status()
+
+    # returns the length of an item using len() function
+    def _item_length(self, param):
+        self.debug_print('{}'.format(inspect.stack()[0][3]))
+        # Add an action result to the App Run
+        action_result = ActionResult(dict(param))
+        self.add_action_result(action_result)
+
+        try:
+            user_item = param[PYTHONUTILITIES_ITEM]
+            result = len(user_item)
+            action_result.add_data({'length': result})
+            action_result.set_status(phantom.APP_SUCCESS)
+        except Exception as e:
+            action_result.set_status(phantom.APP_ERROR, '', e)
+            return action_result.get_status()
+
+        return action_result.get_status()
+
+    # returns the index of a substring in a string
+    def _find_string(self, param):
+        self.debug_print('{}'.format(inspect.stack()[0][3]))
+        # Add an action result to the App Run
+        action_result = ActionResult(dict(param))
+        self.add_action_result(action_result)
+
+        try:
+            searchString = param[PYTHONUTILITIES_SEARCH_STRING]
+            sourceString = param[PYTHONUTILITIES_SOURCE_STRING]
             start = 0
             end = len(sourceString)
             if PYTHONUTILITIES_SOURCE_STRING_START in param:
@@ -63,88 +118,27 @@ class PhantomUtilitiesConnector(BaseConnector):
 
         return action_result.get_status()
 
-    '''
-    https://docs.python.org/2/library/re.html
+    # returns the length of an item using len() function
+    def _split_string(self, param):
+        self.debug_print('{}'.format(inspect.stack()[0][3]))
+        # Add an action result to the App Run
+        action_result = ActionResult(dict(param))
+        self.add_action_result(action_result)
 
-    class re.RegexObject
+        try:
+            source_string = param[PYTHONUTILITIES_SOURCE_STRING]
+            result = source_string.split(PYTHONUTILITIES_SPLIT_VALUE)
+            action_result.add_data({'list': result})
+            action_result.set_status(phantom.APP_SUCCESS)
+        except Exception as e:
+            action_result.set_status(phantom.APP_ERROR, '', e)
+            return action_result.get_status()
 
-    The RegexObject class supports the following methods and attributes:
+        return action_result.get_status()
 
-    search(string[, pos[, endpos]]):
-
-        Scan through string looking for a location where this regular expression produces a match, and return a corresponding
-        MatchObject instance. Return None if no position in the string matches the pattern; note that this is different from
-        finding a zero-length match at some point in the string.
-
-        The optional second parameter pos gives an index in the string where the search is to start; it defaults to 0. This
-        is not completely equivalent to slicing the string; the '^' pattern character matches at the real beginning of the
-        string and at positions just after a newline, but not necessarily at the index where the search is to start.
-
-        The optional parameter endpos limits how far the string will be searched; it will be as if the string is endpos characters
-        long, so only the characters from pos to endpos - 1 will be searched for a match. If endpos is less than pos, no match
-        will be found, otherwise, if rx is a compiled regular expression object, rx.search(string, 0, 50) is equivalent to
-        rx.search(string[:50], 0).
-
-        >>> pattern = re.compile("d")
-        >>> pattern.search("dog")     # Match at index 0
-        <_sre.SRE_Match object at ...>
-        >>> pattern.search("dog", 1)  # No match; search doesn't include the "d"
-
-    match(string[, pos[, endpos]]):
-
-        If zero or more characters at the beginning of string match this regular expression, return a corresponding MatchObject
-        instance. Return None if the string does not match the pattern; note that this is different from a zero-length match.
-
-        The optional pos and endpos parameters have the same meaning as for the search() method.
-
-        >>> pattern = re.compile("o")
-        >>> pattern.match("dog")      # No match as "o" is not at the start of "dog".
-        >>> pattern.match("dog", 1)   # Match as "o" is the 2nd character of "dog".
-        <_sre.SRE_Match object at ...>
-
-        If you want to locate a match anywhere in string, use search() instead (see also search() vs. match()).
-
-    split(string, maxsplit=0):
-
-        Identical to the split() function, using the compiled pattern.
-
-    findall(string[, pos[, endpos]]):
-
-        Similar to the findall() function, using the compiled pattern, but also accepts optional pos and endpos parameters
-        that limit the search region like for match().
-
-    finditer(string[, pos[, endpos]]):
-
-        Similar to the finditer() function, using the compiled pattern, but also accepts optional pos and endpos parameters
-        that limit the search region like for match().
-
-    sub(repl, string, count=0):
-
-        Identical to the sub() function, using the compiled pattern.
-
-    subn(repl, string, count=0):
-
-        Identical to the subn() function, using the compiled pattern.
-
-    flags
-
-        The regex matching flags. This is a combination of the flags given to compile() and any (?...) inline flags in the pattern.
-
-    groups
-
-        The number of capturing groups in the pattern.
-
-    groupindex
-
-        A dictionary mapping any symbolic group names defined by (?P<id>) to group numbers. The dictionary is empty if no
-        symbolic groups were used in the pattern.
-
-    pattern
-
-        The pattern string from which the RE object was compiled
-    '''
+    # implements regex functions for manipulation
     def _re_function(self, param):
-        self.debug_print('_re_function() called.')
+        self.debug_print('{}'.format(inspect.stack()[0][3]))
 
         # Add an action result to the App Run
         action_result = ActionResult(dict(param))
@@ -153,10 +147,10 @@ class PhantomUtilitiesConnector(BaseConnector):
         # Set variables
         action = param[PYTHONUTILITIES_REGEX_ACTION]
         pattern = re.compile(param[PYTHONUTILITIES_REGEX_PATTERN])
-        self.debug_print('pattern - {!r}'.format(param[PYTHONUTILITIES_REGEX_PATTERN]))
-        data = param[PYTHONUTILITIES_SOURCE_STRING]
+        data = (param[PYTHONUTILITIES_SOURCE_STRING]).decode('utf8', 'replace')
         start = 0
         end = len(data) - 1
+
         if PYTHONUTILITIES_SOURCE_STRING_START in param:
             start = int(param[PYTHONUTILITIES_SOURCE_STRING_START])
         if PYTHONUTILITIES_SOURCE_STRING_END in param:
@@ -171,22 +165,27 @@ class PhantomUtilitiesConnector(BaseConnector):
         else:
             replace = r''
 
-        self.debug_print('replace - {!r}'.format(replace))
-
         # Set case structure for defined action
         if action == 'search':
+            # Expected result is either string or unicode
             result = pattern.search(data, start, end)
         elif action == 'match':
+            # Expected result is either string or unicode
             result = pattern.match(data, start, end)
         elif action == 'split':
+            # Expected result is either string or unicode
             result = pattern.split(data)
         elif action == 'findall':
+            # Expected result is list
             result = pattern.findall(data, start, end)
         elif action == 'finditer':
+            # Expected result is iterator
             result = pattern.finditer(data, start, end)
         elif action == 'sub':
+            # Expected result is either string or unicode
             result = pattern.sub(replace, data)
         elif action == 'subn':
+            # Expected result is tuple
             result = pattern.subn(replace, data)
         else:
             action_results.set_status(phantom.APP_ERROR, 'Action not defined. Check requested action.')
@@ -194,36 +193,112 @@ class PhantomUtilitiesConnector(BaseConnector):
         # Check to see if there are results then parse the type for formatting
         if result:
             action_result.set_status(phantom.APP_SUCCESS)
-            if isinstance(result, (str, list, dict, tuple)):
+            self.debug_print("Type {}".format(type(result)))
+            if isinstance(result, (str, unicode, list, dict, tuple)):
                 if type(result) is dict:
                     action_result.add_data(result)
-                    self.debug_print('dict - {!r}'.format(result))
+                elif type(result) is unicode:
+                    self.debug_print("Unicode elif excuted")
+                    result_dict = {
+                        "result": result.encode('utf8', 'replace')
+                    }
+                    self.debug_print("{}".format(result_dict))
+                    action_result.add_data(result_dict)
                 else:
-                    action_result.add_data(pprint.pformat(result))
-                    self.debug_print('value - {!r}'.format(result))
+                    result_dict = {
+                        "result": result
+                    }
+                    action_result.add_data(result_dict)
             else:
                 action_result.add_data(result.groupdict())
+
+        # action_result.update_summary({"type": str(type(result))})
 
         return action_result.get_status()
 
     def _get_substring(self, param):
-        self.debug_print('_get_substring() called.')
+        self.debug_print('{}'.format(inspect.stack()[0][3]))
 
         # Add an action result to the App Run
         action_result = ActionResult(dict(param))
         self.add_action_result(action_result)
 
         try:
+            # Find a better way to validate the inputs. Especially if they are left blank.
             sourceString = param[PYTHONUTILITIES_SOURCE_STRING]
-            start = int(param['start']) - 1
-            end = int(param['end']) - 1
-            step = param['step']
-            substring = sourceString[start:end:step]
-            action_result.add_data(substring)
+            start = 0
+            end = len(sourceString) - 1
+            step = 1
+            if PYTHONUTILITIES_SOURCE_STRING_START in param:
+                start = int(param[PYTHONUTILITIES_SOURCE_STRING_START])
+            if PYTHONUTILITIES_SOURCE_STRING_END in param:
+                end = int(param[PYTHONUTILITIES_SOURCE_STRING_END])
+            if PYTHONUTILITIES_SOURCE_STRING_STEP in param:
+                step = int(param[PYTHONUTILITIES_SOURCE_STRING_STEP])
+
+            self.debug_print('string {}, start {}, end {}'.format(sourceString, start, end))
+            sub_dict = {'substring': sourceString[start:end:step]}
+
+            self.debug_print('substring {}'.format(sub_dict))
+            action_result.add_data(sub_dict)
             action_result.set_status(phantom.APP_SUCCESS)
         except Exception as e:
-            action_result.set_Status(phantom.APP_ERROR, '', e)
+            action_result.set_status(phantom.APP_ERROR, '', e)
             return action_result.get_status()
+
+        return action_result.get_status()
+
+    def _get_date(self, param):
+        self.debug_print('{}'.format(inspect.stack()[0][3]))
+
+        # Add an action result to the App Run
+        action_result = ActionResult(dict(param))
+        self.add_action_result(action_result)
+
+        format_string = param.get('format_string', "%A, %d %B %Y %I:%M%p")
+
+        # List of local time items
+        local_dt = datetime.now()
+        local_iso = local_dt.isocalendar()
+        local_tt = local_dt.timetuple()
+        local_time = {
+            "local_year": local_tt[0],
+            "local_month": local_tt[1],
+            "local_day": local_tt[2],
+            "local_hour": local_tt[3],
+            "local_minute": local_tt[4],
+            "local_second": local_tt[5],
+            "local_weekday": local_tt[6],
+            "local_day_number": local_tt[7],
+            "local_tz": local_tt[8],
+            "local_iso_week": local_iso[1],
+            "local_iso_weekday": local_iso[2],
+            "local_custom": local_dt.strftime(format_string)
+        }
+
+        # List of UTC time items
+        utc_dt = datetime.utcnow()
+        utc_iso = utc_dt.isocalendar()
+        utc_tt = utc_dt.timetuple()
+        utc_time = {
+            "utc_year": utc_tt[0],
+            "utc_month": utc_tt[1],
+            "utc_day": utc_tt[2],
+            "utc_hour": utc_tt[3],
+            "utc_minute": utc_tt[4],
+            "utc_second": utc_tt[5],
+            "utc_weekday": utc_tt[6],
+            "utc_day_number": utc_tt[7],
+            "utc_tz": utc_tt[8],
+            "utc_iso_week": utc_iso[1],
+            "utc_iso_weekday": utc_iso[2],
+            "utc_custom": utc_dt.strftime(format_string)
+        }
+
+        # Add time values to results
+        action_result.add_data(local_time)
+        action_result.add_data(utc_time)
+        action_result.set_status(phantom.APP_SUCCESS)
 
         return action_result.get_status()
 
@@ -235,12 +310,20 @@ class PhantomUtilitiesConnector(BaseConnector):
 
         if (action == "find_string"):
             ret_val = self._find_string(param)
+        elif (action == "item_type"):
+            ret_val = self._item_type(param)
+        elif (action == "dictionary_to_list"):
+            ret_val = self._dictionary_to_list(param)
+        elif (action == "item_length"):
+            ret_val = self._item_length(param)
         elif (action == "split_string"):
             ret_val = self._split_string(param)
         elif (action == "get_substring"):
             ret_val = self._get_substring(param)
         elif (action == "regex_function"):
             ret_val = self._re_function(param)
+        elif (action == "get_date"):
+            ret_val = self._get_date(param)
 
         return ret_val
 
