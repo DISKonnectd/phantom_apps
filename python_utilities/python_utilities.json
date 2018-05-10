@@ -1,18 +1,18 @@
 {
     "appid"       : "f3373a58-733d-4bd7-89ac-d6ce76019eae",
-    "name"      : "Python Utilities ",
+    "name"      : "Python Utilities",
     "description" : "Implements basic python functions for UI access",
-    "publisher": "Freeware",
-    "package_name": "PythonUtilities",
+    "publisher": "Robert Martin",
+    "package_name": "phantom_python_utilities",
     "type": "generic",
     "license": "GNU GPLv3",
     "main_module" : "python_utilities_connector.pyc",
-    "app_version": "1.0.1",
-    "utctime_updated": "2017-08-21T18:07:00.000000Z",
+    "app_version": "1.4.0",
+    "utctime_updated": "2018-04-19T12:20:00.000000Z",
     "product_vendor": "Generic",
     "product_name": "Python Utilities",
     "product_version_regex": ".*",
-    "min_phantom_version": "1.0.0",
+    "min_phantom_version": "3.0.0",
     "logo": "pythonutilities.png",
     "configuration": {},
     "actions": [
@@ -60,6 +60,10 @@
         "output": [
           {
             "data_path": "action_result.data",
+            "data_type": "string"
+          },
+          {
+            "data_path": "action_result.data.*.result",
             "data_type": "string"
           },
           {
@@ -320,11 +324,19 @@
             "data_type": "string"
           },
           {
+            "data_path": "action_result.message",
+            "data_type": "string"
+          },
+          {
             "data_path": "action_result.parameter.format_string",
             "data_type": "string"
           },
           {
             "data_path": "action_result.data",
+            "data_type": "string"
+          },
+          {
+            "data_path": "action_result.data.*.local_datetime",
             "data_type": "string"
           },
           {
@@ -376,6 +388,10 @@
             "data_type": "string"
           },
           {
+            "data_path": "action_result.data.*.utc_datetime",
+            "data_type": "string"
+          },
+          {
             "data_path": "action_result.data.*.utc_year",
             "data_type": "numeric"
           },
@@ -421,6 +437,369 @@
           },
           {
             "data_path": "action_result.data.*.utc_custom",
+            "data_type": "string"
+          }
+        ],
+        "versions":"EQ(*)"
+      },
+      {
+        "action": "offset date",
+        "description": "Returns a datetime object offset by the input integer.",
+        "type": "generic",
+        "identifier": "offset_date",
+        "read_only": true,
+        "parameters": {
+          "date": {
+            "description": "datetime object to manipulate.",
+            "data_type": "string",
+            "required": false
+          },
+          "date_offset": {
+            "description": "number of days to offset the date.",
+            "data_type": "numeric",
+            "required": true
+          }
+        },
+        "output": [
+          {
+            "data_path": "action_result.summary",
+            "data_type": "string"
+          },
+          {
+            "data_path": "action_result.message",
+            "data_type": "string"
+          },
+          {
+            "data_path": "action_result.status",
+            "data_type": "string"
+          },
+          {
+            "data_path": "action_result.parameter.date_offset",
+            "data_type": "numeric"
+          },
+          {
+            "data_path": "action_result.data",
+            "data_type": "string"
+          },
+          {
+            "data_path": "action_result.data.*.date",
+            "data_type": "string"
+          }
+        ],
+        "versions":"EQ(*)"
+      },
+      {
+        "action": "parse date",
+        "description": "Returns datetime objects converted from a string.",
+        "type": "generic",
+        "identifier": "parse_date",
+        "read_only": true,
+        "parameters": {
+          "date_string": {
+            "description": "Date in string format.",
+            "data_type": "string",
+            "required": true
+          },
+          "format_string": {
+            "description": "strftime formatted string to return.",
+            "data_type": "string",
+            "required": true
+          }
+        },
+        "output": [
+          {
+            "data_path": "action_result.summary",
+            "data_type": "string"
+          },
+          {
+            "data_path": "action_result.message",
+            "data_type": "string"
+          },
+          {
+            "data_path": "action_result.status",
+            "data_type": "string"
+          },
+          {
+            "data_path": "action_result.parameter.format_string",
+            "data_type": "string"
+          },
+          {
+            "data_path": "action_result.parameter.date_string",
+            "data_type": "string"
+          },
+          {
+            "data_path": "action_result.data",
+            "data_type": "string"
+          },
+          {
+            "data_path": "action_result.data.*.datetime",
+            "data_type": "string"
+          },
+          {
+            "data_path": "action_result.data.*.year",
+            "data_type": "numeric"
+          },
+          {
+            "data_path": "action_result.data.*.month_num",
+            "data_type": "numeric"
+          },
+          {
+            "data_path": "action_result.data.*.month_name",
+            "data_type": "string"
+          },
+          {
+            "data_path": "action_result.data.*.month_abbrev",
+            "data_type": "string"
+          },
+          {
+            "data_path": "action_result.data.*.day",
+            "data_type": "numeric"
+          },
+          {
+            "data_path": "action_result.data.*.hour",
+            "data_type": "numeric"
+          },
+          {
+            "data_path": "action_result.data.*.minute",
+            "data_type": "numeric"
+          },
+          {
+            "data_path": "action_result.data.*.second",
+            "data_type": "numeric"
+          },
+          {
+            "data_path": "action_result.data.*.weekday_num",
+            "data_type": "numeric"
+          },
+          {
+            "data_path": "action_result.data.*.weekday_name",
+            "data_type": "string"
+          },
+          {
+            "data_path": "action_result.data.*.weekday_abbrev",
+            "data_type": "string"
+          },
+          {
+            "data_path": "action_result.data.*.day_number",
+            "data_type": "numeric"
+          },
+          {
+            "data_path": "action_result.data.*.tz",
+            "data_type": "numeric"
+          },
+          {
+            "data_path": "action_result.data.*.iso_week",
+            "data_type": "numeric"
+          },
+          {
+            "data_path": "action_result.data.*.iso_weekday",
+            "data_type": "numeric"
+          },
+          {
+            "data_path": "action_result.data.*.custom",
+            "data_type": "string"
+          }
+
+        ],
+        "versions":"EQ(*)"
+      },
+      {
+        "action": "list functions",
+        "description": "Provides basic list functions through the UI.",
+        "type": "generic",
+        "identifier": "list_func",
+        "read_only": true,
+        "parameters": {
+          "list_1": {
+            "description": "Primary list",
+            "data_type": "string",
+            "required": true
+          },
+          "list_2": {
+            "description": "Secondary list (only needed for list compare function)",
+            "data_type": "string",
+            "required": false
+          },
+          "list_value": {
+            "description": "Value to perform on list",
+            "data_type": "string",
+            "required": false
+          },
+          "list_index": {
+            "description": "Index in list",
+            "data_type": "string",
+            "required": false
+          },
+          "list_function": {
+            "description": "Action to perform on list",
+            "data_type": "string",
+            "value_list": [
+                "cmp",
+                "len",
+                "max",
+                "min",
+                "lst",
+                "app",
+                "cnt",
+                "ext",
+                "idx",
+                "ins",
+                "pop",
+                "rmv",
+                "rev",
+                "srt"
+            ],
+            "required": true,
+            "order": 1
+          }
+        },
+        "output": [
+          {
+            "data_path": "action_result.summary",
+            "data_type": "string"
+          },
+          {
+            "data_path": "action_result.message",
+            "data_type": "string"
+          },
+          {
+            "data_path": "action_result.status",
+            "data_type": "string"
+          },
+          {
+            "data_path": "action_result.parameter.list_1",
+            "data_type": "string"
+          },
+          {
+            "data_path": "action_result.parameter.list_2",
+            "data_type": "string"
+          },
+          {
+            "data_path": "action_result.parameter.list_value",
+            "data_type": "string"
+          },
+          {
+            "data_path": "action_result.parameter.list_index",
+            "data_type": "numeric"
+          },
+          {
+            "data_path": "action_result.parameter.list_function",
+            "data_type": "string"
+          },
+          {
+            "data_path": "action_result.data",
+            "data_type": "string"
+          },
+          {
+            "data_path": "action_result.data.*.value",
+            "data_type": "string"
+          },
+          {
+            "data_path": "action_result.data.*.list",
+            "data_type": "string"
+          },
+          {
+            "data_path": "action_result.data.*.count",
+            "data_type": "string"
+          },
+          {
+            "data_path": "action_result.data.*.max",
+            "data_type": "string"
+          },
+          {
+            "data_path": "action_result.data.*.min",
+            "data_type": "string"
+          },
+          {
+            "data_path": "action_result.data.*.length",
+            "data_type": "string"
+          },
+          {
+            "data_path": "action_result.data.*.compare",
+            "data_type": "string"
+          }
+        ],
+        "versions":"EQ(*)"
+      },
+      {
+        "action": "diff date",
+        "description": "Returns the difference between two dates.",
+        "type": "generic",
+        "identifier": "diff_date",
+        "read_only": true,
+        "parameters": {
+          "start_date": {
+            "description": "Start date in string format.",
+            "data_type": "string",
+            "required": true
+          },
+          "start_format": {
+            "description": "strptime formatted string to parse the date",
+            "data_type": "string",
+            "required": true
+          },
+          "end_date": {
+            "description": "End date in string format.",
+            "data_type": "string",
+            "required": true
+          },
+          "end_format": {
+            "description": "strptime formatted string to parse the date.",
+            "data_type": "string",
+            "required": true
+          }
+        },
+        "output": [
+          {
+            "data_path": "action_result.summary",
+            "data_type": "string"
+          },
+          {
+            "data_path": "action_result.message",
+            "data_type": "string"
+          },
+          {
+            "data_path": "action_result.status",
+            "data_type": "string"
+          },
+          {
+            "data_path": "action_result.parameter.start_date",
+            "data_type": "string"
+          },
+          {
+            "data_path": "action_result.parameter.start_format",
+            "data_type": "string"
+          },
+          {
+            "data_path": "action_result.parameter.end_date",
+            "data_type": "string"
+          },
+          {
+            "data_path": "action_result.parameter.end_format",
+            "data_type": "string"
+          },
+          {
+            "data_path": "action_result.data",
+            "data_type": "string"
+          },
+          {
+            "data_path": "action_result.data.*.difference",
+            "data_type": "string"
+          },
+          {
+            "data_path": "action_result.data.*.seconds",
+            "data_type": "string"
+          },
+          {
+            "data_path": "action_result.data.*.minutes",
+            "data_type": "string"
+          },
+          {
+            "data_path": "action_result.data.*.hours",
+            "data_type": "string"
+          },
+          {
+            "data_path": "action_result.data.*.days",
             "data_type": "string"
           }
         ],

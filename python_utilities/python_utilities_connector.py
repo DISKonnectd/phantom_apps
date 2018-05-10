@@ -2,21 +2,19 @@
 # File: python_utilities_connector.py
 #
 # --
-# -----------------------------------------
-# Phantom sample App Connector python file
-# -----------------------------------------
-
 # Phantom App imports
 import phantom.app as phantom
-
 from phantom.base_connector import BaseConnector
 from phantom.action_result import ActionResult
 
 # Imports local to this App
 from python_utilities_consts import *
 import simplejson as json
-from datetime import datetime
+import datetime
 import re
+import ast
+# from py_expression_eval import Parser
+
 # import pprint
 import inspect
 
@@ -258,10 +256,11 @@ class PhantomUtilitiesConnector(BaseConnector):
         format_string = param.get('format_string', "%A, %d %B %Y %I:%M%p")
 
         # List of local time items
-        local_dt = datetime.now()
+        local_dt = datetime.datetime.now()
         local_iso = local_dt.isocalendar()
         local_tt = local_dt.timetuple()
         local_time = {
+            "local_datetime": local_dt.strftime("%Y-%m-%dT%H:%M:%S%z"),
             "local_year": local_tt[0],
             "local_month": local_tt[1],
             "local_day": local_tt[2],
@@ -277,10 +276,11 @@ class PhantomUtilitiesConnector(BaseConnector):
         }
 
         # List of UTC time items
-        utc_dt = datetime.utcnow()
+        utc_dt = datetime.datetime.utcnow()
         utc_iso = utc_dt.isocalendar()
         utc_tt = utc_dt.timetuple()
         utc_time = {
+            "utc_datetime": utc_dt.strftime("%Y-%m-%dT%H:%M:%S%z"),
             "utc_year": utc_tt[0],
             "utc_month": utc_tt[1],
             "utc_day": utc_tt[2],
@@ -295,10 +295,293 @@ class PhantomUtilitiesConnector(BaseConnector):
             "utc_custom": utc_dt.strftime(format_string)
         }
 
+        # Combine data into one result
+        result = local_time.copy()
+        result.update(utc_time)
+
         # Add time values to results
-        action_result.add_data(local_time)
-        action_result.add_data(utc_time)
+        action_result.add_data(result)
         action_result.set_status(phantom.APP_SUCCESS)
+
+        return action_result.get_status()
+
+    def _offset_date(self, param):
+        self.debug_print('{}'.format(inspect.stack()[0][3]))
+
+        # Add an action result to the App Run
+        action_result = ActionResult(dict(param))
+        self.add_action_result(action_result)
+
+        try:
+            date_offset = param.get('date_offset')
+            # Splits the string and casts to int for args in timedelta
+            date_args = dict([a, int(x)] for a, x in (e.split('=') for e in date_offset.split(', ')))
+            date_param = datetime.datetime.strptime(param.get('date'), "%Y-%m-%dT%H:%M:%S")
+            # Return date with offset
+            result = date_param + datetime.timedelta(**date_args)
+            action_result.add_data({ "date": result.strftime("%Y-%m-%dT%H:%M:%S%z") })
+            action_result.set_status(phantom.APP_SUCCESS)
+
+        except Exception as e:
+            action_result.set_status(phantom.APP_ERROR, '', e)
+
+        return action_result.get_status()
+
+    def _parse_date(self, param):
+        self.debug_print('{}'.format(inspect.stack()[0][3]))
+
+        # Add an action result to the App Run
+        action_result = ActionResult(dict(param))
+        self.add_action_result(action_result)
+
+        try:
+            date_string = param.get('date_string')
+            format_string = param.get('format_string')
+
+            # List of local time items
+            dt = datetime.datetime.strptime(date_string, format_string)
+            iso = dt.isocalendar()
+            tt = dt.timetuple()
+            details = {
+                "datetime": dt.strftime("%Y-%m-%dT%H:%M:%S%z"),
+                "date": dt.strftime("%Y-%m-%d"),
+                "time": dt.strftime("%H:%M:%S"),
+                "year": tt[0],
+                "month_num": tt[1],
+                "month_name": dt.strftime("%B"),
+                "month_abbrev": dt.strftime("%b"),
+                "day": tt[2],
+                "hour": tt[3],
+                "minute": tt[4],
+                "second": tt[5],
+                "weekday_num": tt[6],
+                "weekday_name": dt.strftime("%A"),
+                "weekday_abbrev": dt.strftime("%a"),
+                "day_number": tt[7],
+                "tz": tt[8],
+                "iso_week": iso[1],
+                "iso_weekday": iso[2],
+                "custom": dt.strftime(format_string)
+            }
+
+            action_result.add_data(details)
+            action_result.set_status(phantom.APP_SUCCESS)
+        except Exception as e:
+            action_result.set_status(phantom.APP_ERROR, '', e)
+
+        return action_result.get_status()
+
+    def _diff_date(self, param):
+        self.debug_print('{}'.format(inspect.stack()[0][3]))
+
+        # Add an action result to the App Run
+        action_result = ActionResult(dict(param))
+        self.add_action_result(action_result)
+
+        try:
+            # get parameters
+            start_date = param.get('start_date')
+            end_date = param.get('end_date')
+            start_format = param.get('start_format')
+            end_format = param.get('end_format')
+
+            # get datetime objects
+            start_dt = datetime.datetime.strptime(start_date, start_format)
+            end_dt = datetime.datetime.strptime(end_date, end_format)
+
+            diff = end_dt - start_dt
+            diff_seconds = diff.total_seconds()
+            diff_minutes = diff.total_seconds() / 60
+            diff_hours = diff.total_seconds() / (60 * 60)
+            diff_days = diff.total_seconds() / (60 * 60 * 24)
+
+            self.debug_print("diff - {0}".format(diff))
+            self.debug_print("diff - {0}".format(diff_seconds))
+            self.debug_print("diff - {0}".format(diff_minutes))
+            self.debug_print("diff - {0}".format(diff_hours))
+            self.debug_print("diff - {0}".format(diff_days))
+
+            # add results
+            action_result.add_data({"difference": str(diff) })
+            action_result.add_data({"seconds": str(diff_seconds) })
+            action_result.add_data({"minutes": str(diff_minutes) })
+            action_result.add_data({"hours": str(diff_hours) })
+            action_result.add_data({"days": str(diff_days) })
+            action_result.set_status(phantom.APP_SUCCESS)
+        except Exception as e:
+            action_result.set_status(phantom.APP_ERROR, '', e)
+
+        return action_result.get_status()
+
+    def _list_functions(self, param):
+        self.debug_print('{}'.format(inspect.stack()[0][3]))
+
+        # Add an action result to the App Run
+        action_result = ActionResult(dict(param))
+        self.add_action_result(action_result)
+
+        try:
+            # get all the parameters and define locals
+            self.debug_print("Getting parameters...")
+            list_1 = ast.literal_eval(param.get('list_1'))
+            list_2 = ast.literal_eval(param.get('list_2', '[]'))
+            list_value = param.get('list_value')
+            list_index = param.get('list_index')
+
+            # currently supported funtions:
+            # compare - compares tw0 lists
+            # len - returns the length
+            # max - returns maximum value
+            # min - returns minimum value
+            # list - converts a tuple into list
+            # append - adds object to list
+            # count - counts the number of occurances of x
+            # extend - appends seq to list
+            # index - returns lowest index of x
+            # insert - insert object at offset x
+            # pop - removes and returns the last obj
+            # remove - removes x from list
+            # reverse - reverses the list
+            # sort - sorts objest of list
+
+            list_func = param.get('list_function')
+            list_results = {}
+
+            self.debug_print("List function picked {}".format(list_func))
+            self.debug_print("param type {}".format(type(list_1)))
+            self.debug_print("params  {}".format(list_1))
+
+            # Compare function
+            if list_func == "cmp":
+                # check type of input parameters
+                if isinstance(list_1, list) and isinstance(list_2, list):
+                    list_results['compare'] = cmp(list_1, list_2)
+                    action_result.set_status(phantom.APP_SUCCESS)
+                else:
+                    action_result.set_status(phantom.APP_ERROR, 'One or more values provided are not of type list')
+
+            # Length function
+            elif list_func == "len":
+                # check type of input parameters
+                if isinstance(list_1, list):
+                    self.debug_print(list_1)
+                    list_results['length'] = len(list_1)
+                    action_result.set_status(phantom.APP_SUCCESS)
+                else:
+                    action_result.set_status(phantom.APP_ERROR, 'Value provided is not of type list')
+
+            # Max function
+            elif list_func == "max":
+                # check type of input parameters
+                if isinstance(list_1, list):
+                    list_results['max'] = max(list_1)
+                    action_result.set_status(phantom.APP_SUCCESS)
+                else:
+                    action_result.set_status(phantom.APP_ERROR, 'Value provided is not of type list')
+
+            # Min function
+            elif list_func == "min":
+                # check type of input parameters
+                if isinstance(list_1, list):
+                    list_results['min'] = min(list_1)
+                    action_result.set_status(phantom.APP_SUCCESS)
+                else:
+                    action_result.set_status(phantom.APP_ERROR, 'Value provided is not of type list')
+
+            # Convert function
+            elif list_func == "lst":
+                # check type of input parameters
+                if isinstance(list_1, list):
+                    list_results['list'] = list(list_1)
+                    action_result.set_status(phantom.APP_SUCCESS)
+                else:
+                    action_result.set_status(phantom.APP_ERROR, 'Value provided could not be converted to list')
+
+            # Append function
+            elif list_func == "app":
+                # check type of input parameters
+                if isinstance(list_1, list):
+                    list_results['list'] = list_1.append(list_value)
+                    action_result.set_status(phantom.APP_SUCCESS)
+                else:
+                    action_result.set_status(phantom.APP_ERROR, 'Value provided is not of type list')
+
+            # Count function
+            elif list_func == "cnt":
+                # check type of input parameters
+                if isinstance(list_1, list):
+                    list_results['count'] = list_1.count(list_value)
+                    action_result.set_status(phantom.APP_SUCCESS)
+                else:
+                    action_result.set_status(phantom.APP_ERROR, 'Value provided is not of type list')
+
+            # Extend function
+            elif list_func == "ext":
+                # check type of input parameters
+                if isinstance(list_1, list):
+                    list_results['list'] = list_1.extend(list_value)
+                    action_result.set_status(phantom.APP_SUCCESS)
+                else:
+                    action_result.set_status(phantom.APP_ERROR, 'Value provided is not of type list')
+
+            # Index function
+            elif list_func == "idx":
+                # check type of input parameters
+                if isinstance(list_1, list):
+                    list_results['list'] = list_1.index(list_value)
+                    action_result.set_status(phantom.APP_SUCCESS)
+                else:
+                    action_result.set_status(phantom.APP_ERROR, 'Value provided is not of type list')
+
+            # Insert function
+            elif list_func == "ins":
+                # check type of input parameters
+                if isinstance(list_1, list) and isinstance(list_index, int):
+                    list_results['list'] = list_1.insert(list_index, list_value)
+                    action_result.set_status(phantom.APP_SUCCESS)
+                else:
+                    action_result.set_status(phantom.APP_ERROR, 'Value provided is not of type list or index is not of type int')
+
+            # Pop function
+            elif list_func == "pop":
+                # check type of input parameters
+                if isinstance(list_1, list):
+                    list_results['value'] = list_1.pop()
+                    list_results['list'] = list_1
+                    action_result.set_status(phantom.APP_SUCCESS)
+                else:
+                    action_result.set_status(phantom.APP_ERROR, 'Value provided is not of type list')
+
+            # Remove function
+            elif list_func == "rmv":
+                # check type of input parameters
+                if isinstance(list_1, list):
+                    list_results['list'] = list_1.remove(list_value)
+                    action_result.set_status(phantom.APP_SUCCESS)
+                else:
+                    action_result.set_status(phantom.APP_ERROR, 'Value provided is not of type list')
+
+            # Reverse function
+            elif list_func == "rev":
+                # check type of input parameters
+                if isinstance(list_1, list):
+                    list_results['list'] = list_1.reverse()
+                    action_result.set_status(phantom.APP_SUCCESS)
+                else:
+                    action_result.set_status(phantom.APP_ERROR, 'Value provided is not of type list')
+
+            # Sort function
+            elif list_func == "srt":
+                # check type of input parameters
+                if isinstance(list_1, list):
+                    list_results['list'] = list_1.sort()
+                    action_result.set_status(phantom.APP_SUCCESS)
+                else:
+                    action_result.set_status(phantom.APP_ERROR, 'Value provided is not of type list')
+
+            action_result.add_data(list_results)
+        except Exception as e:
+            action_result.set_status(phantom.APP_ERROR, '', e)
 
         return action_result.get_status()
 
@@ -324,6 +607,14 @@ class PhantomUtilitiesConnector(BaseConnector):
             ret_val = self._re_function(param)
         elif (action == "get_date"):
             ret_val = self._get_date(param)
+        elif (action == "offset_date"):
+            ret_val = self._offset_date(param)
+        elif (action == "parse_date"):
+            ret_val = self._parse_date(param)
+        elif (action == "diff_date"):
+            ret_val = self._diff_date(param)
+        elif (action == "list_func"):
+            ret_val = self._list_functions(param)
 
         return ret_val
 
