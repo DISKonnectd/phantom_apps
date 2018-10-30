@@ -1,0 +1,556 @@
+{
+    "appid": "445e2fb0-fbbf-45f4-8846-4c986e759aa7",
+    "name": "SharePoint",
+    "description": "Provides various interactions with Microsoft SharePoint sites.",
+    "type": "reputation",
+    "product_vendor": "Microsoft",
+    "logo": "sharepoint.png",
+    "product_name": "SharePoint",
+    "product_version_regex": ".*",
+    "publisher": "Robert Martin",
+    "license": "Freeware",
+    "app_version": "1.0.4",
+    "utctime_updated": "2018-01-02T17:18:32.154210Z",
+    "package_name": "phantom_sharepoint",
+    "main_module": "sharepoint_connector.py",
+    "min_phantom_version": "2.0.0",
+    "configuration": {
+        "url": {
+            "description": "URL to Sharepoint",
+            "data_type": "string",
+            "required": true,
+            "value_list": [],
+            "default": "",
+            "order": 0
+        },
+        "site": {
+            "description": "Sharepoint site",
+            "data_type": "string",
+            "required": true,
+            "value_list": [],
+            "default": "",
+            "order": 1
+        },
+        "username": {
+            "description": "NTLM user",
+            "data_type": "string",
+            "required": true,
+            "value_list": [],
+            "default": "",
+            "order": 2
+        },
+        "password": {
+            "description": "NTLM password",
+            "data_type": "password",
+            "required": true,
+            "value_list": [],
+            "default": "",
+            "order": 2
+        }
+    },
+    "actions": [
+        {
+            "action": "test connectivity",
+            "identifier": "test_connectivity",
+            "description": "Validate the asset configuration for connectivity using supplied configuration.",
+            "verbose": "",
+            "type": "test",
+            "read_only": true,
+            "parameters": {},
+            "output": [],
+            "versions": "EQ(*)"
+        },
+        {
+            "action": "sync list",
+            "identifier": "sync_list",
+            "description": "Retrieves changes from list",
+            "verbose": "Retrieves the changes to a list from SharePoint site using the REST api from Microsoft",
+            "type": "generic",
+            "read_only": true,
+            "parameters": {
+                "list": {
+                    "description": "Title of the list to retrieve",
+                    "data_type": "string",
+                    "required": true,
+                    "primary": true,
+                    "contains": [],
+                    "value_list": [],
+                    "default": "",
+                    "order": 0
+                },
+                "tag": {
+                    "description": "Tag to extract from XML",
+                    "data_type": "string",
+                    "required": false,
+                    "primary": false,
+                    "contains": [],
+                    "value_list": [],
+                    "default": "",
+                    "order": 1
+                },
+                "attributes": {
+                    "description": "Attributes from the tag to extract.",
+                    "data_type": "string",
+                    "required": false,
+                    "primary": false,
+                    "contains": [],
+                    "value_list": [],
+                    "default": "",
+                    "order": 1
+                },
+                "titles": {
+                    "description": "Titles to rename the attributes.",
+                    "data_type": "string",
+                    "required": false,
+                    "primary": false,
+                    "contains": [],
+                    "value_list": [],
+                    "default": "",
+                    "order": 1
+                },
+                "text": {
+                    "description": "A string that contains the change token for the request. If null is passed, all items in the list are returned.",
+                    "data_type": "string",
+                    "required": false,
+                    "primary": false,
+                    "contains": [],
+                    "value_list": [],
+                    "default": "",
+                    "order": 1
+                },
+                "ViewName": {
+                    "description": "A string that contains the change token for the request. If null is passed, all items in the list are returned.",
+                    "data_type": "string",
+                    "required": false,
+                    "primary": false,
+                    "contains": [],
+                    "value_list": [],
+                    "default": "",
+                    "order": 1
+                },
+                "Query": {
+                    "description": "A string that contains the change token for the request. If null is passed, all items in the list are returned.",
+                    "data_type": "string",
+                    "required": false,
+                    "primary": false,
+                    "contains": [],
+                    "value_list": [],
+                    "default": "",
+                    "order": 2
+                },
+                "QueryOptions": {
+                    "description": "A string that contains the change token for the request. If null is passed, all items in the list are returned.",
+                    "data_type": "string",
+                    "required": false,
+                    "primary": false,
+                    "contains": [],
+                    "value_list": [],
+                    "default": "",
+                    "order": 3
+                },
+                "Contains": {
+                    "description": "A string that contains the change token for the request. If null is passed, all items in the list are returned.",
+                    "data_type": "string",
+                    "required": false,
+                    "primary": false,
+                    "contains": [],
+                    "value_list": [],
+                    "default": "",
+                    "order": 4
+                },
+                "ViewFields": {
+                    "description": "A string that contains the change token for the request. If null is passed, all items in the list are returned.",
+                    "data_type": "string",
+                    "required": false,
+                    "primary": false,
+                    "contains": [],
+                    "value_list": [],
+                    "default": "",
+                    "order": 5
+                },
+                "ChangeToken": {
+                    "description": "A string that contains the change token for the request. If null is passed, all items in the list are returned.",
+                    "data_type": "string",
+                    "required": false,
+                    "primary": false,
+                    "contains": [],
+                    "value_list": [],
+                    "default": "",
+                    "order": 6
+                },
+                "RowLimit": {
+                    "description": "A string that contains the change token for the request. If null is passed, all items in the list are returned.",
+                    "data_type": "numeric",
+                    "required": false,
+                    "primary": false,
+                    "contains": [],
+                    "value_list": [],
+                    "default": "",
+                    "order": 7
+                }
+            },
+            "output": [
+                {
+                    "data_path": "action_result.parameter.list",
+                    "data_type": "string",
+                    "contains": []
+                },
+                {
+                    "data_path": "action_result.parameter.attributes",
+                    "data_type": "string",
+                    "contains": []
+                },
+                {
+                    "data_path": "action_result.parameter.text",
+                    "data_type": "string",
+                    "contains": []
+                },
+                {
+                    "data_path": "action_result.parameter.titles",
+                    "data_type": "string",
+                    "contains": []
+                },
+                {
+                    "data_path": "action_result.parameter.tag",
+                    "data_type": "string",
+                    "contains": []
+                },
+                {
+                    "data_path": "action_result.parameter.ViewName",
+                    "data_type": "string",
+                    "contains": []
+                },
+                {
+                    "data_path": "action_result.parameter.Query",
+                    "data_type": "string",
+                    "contains": []
+                },
+                {
+                    "data_path": "action_result.parameter.QueryOptions",
+                    "data_type": "string",
+                    "contains": []
+                },
+                {
+                    "data_path": "action_result.parameter.Contains",
+                    "data_type": "string",
+                    "contains": []
+                },
+                {
+                    "data_path": "action_result.parameter.ViewFields",
+                    "data_type": "string",
+                    "contains": []
+                },
+                {
+                    "data_path": "action_result.parameter.ChangeToken",
+                    "data_type": "string",
+                    "contains": []
+                },
+                {
+                    "data_path": "action_result.parameter.RowLimit",
+                    "data_type": "numeric",
+                    "contains": []
+                },
+                {
+                    "data_path": "action_result.summary",
+                    "data_type": "string",
+                    "contains": []
+                },
+                {
+                    "data_path": "action_result.status",
+                    "data_type": "string",
+                    "contains": []
+                },
+                {
+                    "data_path": "action_result.message",
+                    "data_type": "string",
+                    "contains": []
+                },
+                {
+                    "data_path": "summary.total_objects",
+                    "data_type": "numeric",
+                    "contains": []
+                },
+                {
+                    "data_path": "summary.total_objects_successful",
+                    "data_type": "numeric",
+                    "contains": []
+                },
+                {
+                    "data_path": "action_result.data.*.ChangeToken",
+                    "data_type": "string",
+                    "contains": []
+                },
+                {
+                    "data_path": "action_result.data.*.List Changes",
+                    "data_type": "string",
+                    "contains": []
+                },
+                {
+                    "data_path": "action_result.data.*.Change count",
+                    "data_type": "numeric",
+                    "contains": []
+                },
+                {
+                    "data_path": "action_result.data.*.full_response",
+                    "data_type": "string",
+                    "contains": []
+                },
+                {
+                    "data_path": "action_result.data.*.vaultId",
+                    "data_type": "string",
+                    "contains": []
+                }
+            ],
+            "render": {
+                "type": "table"
+            },
+            "versions": "EQ(*)"
+        },
+        {
+            "action": "get list",
+            "identifier": "get_list",
+            "description": "Retrieves a list from a SharePoint Site",
+            "verbose": "Retrieves a list from a SharePoint site using the REST api from Microsoft",
+            "type": "generic",
+            "read_only": true,
+            "parameters": {
+                "list": {
+                    "description": "Title of the list to retrieve",
+                    "data_type": "string",
+                    "required": true,
+                    "primary": false,
+                    "contains": [],
+                    "value_list": [],
+                    "default": "",
+                    "order": 0
+                },
+                "filter": {
+                    "description": "Filter the list to retrieve",
+                    "data_type": "string",
+                    "required": false,
+                    "primary": false,
+                    "contains": [],
+                    "value_list": [],
+                    "default": "",
+                    "order": 1
+                }
+            },
+            "output": [
+                {
+                    "data_path": "action_result.parameter.list",
+                    "data_type": "string",
+                    "contains": [],
+                    "column_name": "list",
+                    "column_order": 0
+                },
+                {
+                    "data_path": "action_result.parameter.filter",
+                    "data_type": "string",
+                    "contains": [],
+                    "column_name": "filter",
+                    "column_order": 1
+                },
+                {
+                    "data_path": "action_result.status",
+                    "data_type": "string",
+                    "column_name": "status",
+                    "column_order": 2
+                },
+                {
+                    "data_path": "action_result.summary",
+                    "data_type": "string",
+                    "column_name": "summary",
+                    "column_order": 3
+                },
+                {
+                    "data_path": "action_result.message",
+                    "data_type": "string",
+                    "column_name": "message",
+                    "column_order": 4
+                },
+                {
+                    "data_path": "action_result.data",
+                    "data_type": "string",
+                    "column_name": "data",
+                    "column_order": 5
+                },
+                {
+                    "data_path": "summary.total_objects",
+                    "data_type": "numeric"
+                },
+                {
+                    "data_path": "summary.total_objects_successful",
+                    "data_type": "numeric"
+                }
+            ],
+            "render": {
+                "type": "table"
+            },
+            "versions": "EQ(*)"
+        },
+        {
+            "action": "get file",
+            "identifier": "get_file",
+            "description": "Retrieves a file from a SharePoint Site",
+            "verbose": "Retrieves a file from a SharePoint site using the REST api from Microsoft",
+            "type": "generic",
+            "read_only": true,
+            "parameters": {
+                "filename": {
+                    "description": "File name to retrieve",
+                    "data_type": "string",
+                    "required": true,
+                    "primary": false,
+                    "contains": [],
+                    "value_list": [],
+                    "default": "",
+                    "order": 0
+                },
+                "filepath": {
+                    "description": "Folder path on site",
+                    "data_type": "string",
+                    "required": true,
+                    "primary": false,
+                    "contains": [],
+                    "value_list": [],
+                    "default": "",
+                    "order": 0
+                }
+            },
+            "output": [
+                {
+                    "data_path": "action_result.parameter.filename",
+                    "data_type": "string",
+                    "contains": [],
+                    "column_name": "file",
+                    "column_order": 0
+                },
+                {
+                    "data_path": "action_result.parameter.filepath",
+                    "data_type": "string",
+                    "contains": [],
+                    "column_name": "path",
+                    "column_order": 1
+                },
+                {
+                    "data_path": "action_result.status",
+                    "data_type": "string",
+                    "column_name": "status",
+                    "column_order": 2
+                },
+                {
+                    "data_path": "action_result.summary",
+                    "data_type": "string",
+                    "column_name": "status",
+                    "column_order": 3
+                },
+                {
+                    "data_path": "action_result.message",
+                    "data_type": "string",
+                    "column_name": "status",
+                    "column_order": 4
+                },
+                {
+                    "data_path": "action_result.data",
+                    "data_type": "string",
+                    "column_name": "status",
+                    "column_order": 5
+                },
+                {
+                    "data_path": "summary.total_objects",
+                    "data_type": "numeric"
+                },
+                {
+                    "data_path": "summary.total_objects_successful",
+                    "data_type": "numeric"
+                }
+            ],
+            "render": {
+                "type": "table"
+            },
+            "versions": "EQ(*)"
+        },
+        {
+            "action": "remove file",
+            "identifier": "remove_file",
+            "description": "Removes a file from a SharePoint Site",
+            "verbose": "Removes a file from a SharePoint site using the REST api from Microsoft",
+            "type": "generic",
+            "read_only": true,
+            "parameters": {
+                "filename": {
+                    "description": "File name to remove",
+                    "data_type": "string",
+                    "required": true,
+                    "primary": false,
+                    "contains": [],
+                    "value_list": [],
+                    "default": "",
+                    "order": 0
+                },
+                "filepath": {
+                    "description": "Folder path on site",
+                    "data_type": "string",
+                    "required": true,
+                    "primary": false,
+                    "contains": [],
+                    "value_list": [],
+                    "default": "",
+                    "order": 0
+                }
+            },
+            "output": [
+                {
+                    "data_path": "action_result.parameter.filename",
+                    "data_type": "string",
+                    "contains": [],
+                    "column_name": "file",
+                    "column_order": 0
+                },
+                {
+                    "data_path": "action_result.parameter.filepath",
+                    "data_type": "string",
+                    "contains": [],
+                    "column_name": "path",
+                    "column_order": 1
+                },
+                {
+                    "data_path": "action_result.status",
+                    "data_type": "string",
+                    "column_name": "status",
+                    "column_order": 2
+                },
+                {
+                    "data_path": "action_result.summary",
+                    "data_type": "string",
+                    "column_name": "status",
+                    "column_order": 3
+                },
+                {
+                    "data_path": "action_result.message",
+                    "data_type": "string",
+                    "column_name": "status",
+                    "column_order": 4
+                },
+                {
+                    "data_path": "action_result.data",
+                    "data_type": "string",
+                    "column_name": "status",
+                    "column_order": 5
+                },
+                {
+                    "data_path": "summary.total_objects",
+                    "data_type": "numeric"
+                },
+                {
+                    "data_path": "summary.total_objects_successful",
+                    "data_type": "numeric"
+                }
+            ],
+            "render": {
+                "type": "table"
+            },
+            "versions": "EQ(*)"
+        }
+    ]
+}
